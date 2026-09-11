@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Black Jackal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.checkout-items{margin:20px 0 30px}.checkout-item{display:grid;grid-template-columns:80px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #d3d3ce}.checkout-item img{width:80px;height:100px;object-fit:cover}.checkout-item strong{font-size:11px}.checkout-item small{display:block;color:#777;margin-top:7px;line-height:1.5}.checkout-item b{font-size:11px}.checkout-empty{padding:30px 0;color:#777}.order-confirmation{grid-column:1/-1;text-align:center;padding:80px 20px}.order-confirmation .success-icon{margin:0 auto 25px;width:70px;height:70px;border:1px solid #111;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}.order-confirmation h1{font:900 clamp(50px,7vw,100px)/.85 Montserrat;letter-spacing:-.06em;margin:0 0 25px}.order-confirmation em{font-style:normal;-webkit-text-stroke:1px #111;color:transparent}.order-confirmation p{max-width:560px;margin:0 auto 30px;line-height:1.8;color:#555}
+</style></head>
+<body class="checkout-body">
+<header class="simple-header"><a class="brand" href="index.html"><img src="black-jackal-logo.svg"><span>BLACK JACKAL</span></a><a href="shop.html">← CONTINUE SHOPPING</a></header>
+<main class="checkout-page" id="checkout-main">
+<section class="checkout-form"><p class="eyebrow">SECURE CHECKOUT</p><h1>COMPLETE<br><em>YOUR ORDER.</em></h1>
+<form id="checkout-form">
+<h3>CONTACT</h3><input id="email" type="email" placeholder="Email address" required>
+<h3>DELIVERY ADDRESS</h3><div class="two"><input id="fname" placeholder="First name" required><input id="lname" placeholder="Last name" required></div>
+<input id="address" placeholder="Address / House no." required><div class="two"><input id="city" placeholder="City" required><input id="state" placeholder="State" required></div>
+<div class="two"><input id="pin" inputmode="numeric" pattern="[0-9]{6}" placeholder="PIN code" required><input id="phone" inputmode="tel" pattern="[0-9+ ()-]{10,}" placeholder="Phone" required></div>
+<h3>PAYMENT</h3><div class="payment-box"><label><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label><label><input type="radio" name="payment" value="online"> Online payment <small>(connect Razorpay/Stripe backend)</small></label></div>
+<button class="btn btn-dark full" type="submit">PLACE ORDER</button><p class="secure-note">🔒 Demo checkout. Connect a backend/payment gateway before accepting real payments.</p>
+</form></section>
+<aside class="checkout-summary"><p class="eyebrow">YOUR BAG</p><div class="checkout-items" id="summary-items"></div>
+<div class="summary-line"><span>Subtotal</span><strong id="subtotal">₹0</strong></div><div class="summary-line"><span>Shipping</span><strong id="shipping">FREE</strong></div><div class="summary-total"><span>TOTAL</span><strong id="total">₹0</strong></div>
+</aside></main>
+<script src="data.js"></script><script src="app.js"></script>
+<script>
+function checkoutCart(){return getCart()}
+function renderCheckout(){
+ const cart=checkoutCart(),box=document.getElementById("summary-items");let total=0;
+ if(!cart.length){box.innerHTML='<div class="checkout-empty">Your bag is empty.<br><br><a href="shop.html"><b>SHOP THE DROP →</b></a></div>';document.querySelector("#checkout-form button[type=submit]").disabled=true;return;}
+ box.innerHTML=cart.map(i=>{const p=products.find(x=>x.id===i.id);if(!p)return "";const line=p.price*i.qty;total+=line;
+ return `<div class="checkout-item"><img src="${p.image}" alt="${p.name}"><div><strong>${p.name}</strong><small>Size: <b>${i.size}</b><br>Quantity: ${i.qty}</small></div><b>₹${fmt(line)}</b></div>`}).join("");
+ document.getElementById("subtotal").textContent="₹"+fmt(total);document.getElementById("total").textContent="₹"+fmt(total);
+}
+renderCheckout();
+
+document.getElementById("checkout-form").addEventListener("submit",function(e){
+ e.preventDefault();
+ const cart=checkoutCart(); if(!cart.length)return;
+ let total=0;
+ const items=cart.map(i=>{const p=products.find(x=>x.id===i.id);const line=p.price*i.qty;total+=line;return {productId:p.id,name:p.name,size:i.size,quantity:i.qty,unitPrice:p.price,lineTotal:line,image:p.image};});
+ const orderId="BJ-"+Date.now().toString().slice(-8);
+ const order={orderId,status:"Confirmed",createdAt:new Date().toISOString(),payment:document.querySelector('input[name="payment"]:checked').value,total,items,customer:{email:email.value,firstName:fname.value,lastName:lname.value,address:address.value,city:city.value,state:state.value,pin:pin.value,phone:phone.value}};
+ const orders=JSON.parse(localStorage.getItem("bj_orders")||"[]");orders.unshift(order);localStorage.setItem("bj_orders",JSON.stringify(orders));
+ localStorage.setItem("bj_last_order",JSON.stringify(order));localStorage.removeItem(CART_KEY);
+ document.getElementById("checkout-main").innerHTML=`<section class="order-confirmation"><div class="success-icon">✓</div><p class="eyebrow">ORDER CONFIRMED</p><h1>WELCOME TO<br><em>THE PACK.</em></h1><p>Your order <strong>${orderId}</strong> has been placed successfully.<br>Order total: <strong>₹${fmt(total)}</strong><br>A confirmation will be sent to <strong>${email.value}</strong>.</p><a class="btn btn-dark" href="account.html">VIEW MY ORDERS</a> <a class="btn" href="shop.html">CONTINUE SHOPPING</a></section>`;
+});
+</script></body></html>

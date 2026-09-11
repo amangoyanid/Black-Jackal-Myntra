@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Product — Black Jackal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+<div class="announcement">FREE SHIPPING ON ORDERS ABOVE ₹1,499 <span>•</span> EASY SIZE EXCHANGE</div>
+<header class="site-header"><a class="brand" href="index.html"><img src="black-jackal-logo.svg"><span>BLACK JACKAL</span></a><nav class="desktop-nav"><a href="shop.html">SHOP</a><a href="index.html#story">THE JACKAL CODE</a></nav><div class="header-actions"><a class="icon-btn" href="account.html">◯</a><button class="cart-btn" data-cart-open>BAG <span class="cart-count">0</span></button><button class="menu-btn" data-menu-open>☰</button></div></header>
+<main class="product-page" id="product-page"></main>
+<aside class="cart-drawer" data-cart-drawer><div class="drawer-head"><h3>YOUR BAG</h3><button data-cart-close>×</button></div><div class="cart-items" data-cart-items></div><div class="cart-summary"><div><span>Subtotal</span><strong data-cart-total>₹0</strong></div><small>Taxes and shipping calculated at checkout.</small><a class="btn btn-dark full" href="checkout.html">CHECKOUT</a></div></aside><div class="overlay" data-overlay></div>
+<script src="app.js"></script><script src="data.js"></script>
+<script>
+const id=new URLSearchParams(location.search).get("id")||products[0].id,p=products.find(x=>x.id===id)||products[0];
+document.title=p.name+" — Black Jackal";
+document.getElementById("product-page").innerHTML=`<div class="breadcrumbs"><a href="shop.html">SHOP</a> / ${p.name.toUpperCase()}</div>
+<div class="product-layout"><div class="product-gallery"><img src="${p.image}" alt="${p.name}"><div class="gallery-note">BLACK JACKAL / ${p.code}</div></div>
+<div class="product-info"><p class="eyebrow">${p.type}</p><h1>${p.name}</h1><div class="price">₹${fmt(p.price)}</div><p class="product-desc">${p.description}</p>
+<div class="selector"><label>SELECT SIZE</label><div class="sizes">${p.sizes.map(s=>`<button data-size="${s}">${s}</button>`).join("")}</div><a href="#" class="size-guide">SIZE GUIDE →</a></div>
+<div class="quantity"><label>QUANTITY</label><div><button id="minus">−</button><span id="qty">1</span><button id="plus">+</button></div></div>
+<button class="btn btn-dark add-main" id="add">ADD TO BAG — ₹${fmt(p.price)}</button>
+<div class="accordions"><details open><summary>DETAILS</summary><p>${p.details}</p></details><details><summary>SHIPPING & EXCHANGE</summary><p>Free shipping over ₹1,499. Easy size exchange on eligible products. Delivery timelines are shown at checkout.</p></details><details><summary>CARE</summary><p>Cold wash inside out. Do not bleach. Tumble dry low. Iron inside out.</p></details></div></div></div>`;
+let selected=p.sizes[0],qty=1;document.querySelectorAll("[data-size]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-size]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");selected=b.dataset.size});
+document.querySelector("[data-size]").classList.add("selected");document.getElementById("plus").onclick=()=>{qty++;document.getElementById("qty").textContent=qty};document.getElementById("minus").onclick=()=>{qty=Math.max(1,qty-1);document.getElementById("qty").textContent=qty};
+document.getElementById("add").onclick=()=>{addToCart(p.id,selected,qty);openCart()};
+</script></body></html>

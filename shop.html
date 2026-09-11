@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Shop — Black Jackal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"></head>
+<body>
+<div class="announcement">FREE SHIPPING ON ORDERS ABOVE ₹1,499 <span>•</span> EASY SIZE EXCHANGE</div>
+<header class="site-header"><a class="brand" href="index.html"><img src="black-jackal-logo.svg"><span>BLACK JACKAL</span></a>
+<nav class="desktop-nav"><a href="index.html#new">NEW IN</a><a href="shop.html">SHOP</a><a href="index.html#story">THE JACKAL CODE</a></nav>
+<div class="header-actions"><button class="icon-btn" data-open-search>⌕</button><a class="icon-btn" href="account.html">◯</a><button class="cart-btn" data-cart-open>BAG <span class="cart-count">0</span></button><button class="menu-btn" data-menu-open>☰</button></div></header>
+<div class="mobile-menu" data-mobile-menu><button class="close-menu" data-menu-close>×</button><a href="index.html">HOME</a><a href="shop.html">SHOP</a><a href="index.html#story">THE JACKAL CODE</a><a href="account.html">ACCOUNT</a></div>
+
+<main class="shop-page"><div class="shop-hero"><p class="eyebrow">BLACK JACKAL / SHOP</p><h1>THE FULL<br><em>EDIT.</em></h1><p>Heavyweight essentials and statement pieces.</p></div>
+<div class="shop-toolbar"><div><span id="product-count">0</span> PRODUCTS</div><div class="filters"><button data-filter="all" class="active">ALL</button><button data-filter="tshirt">T-SHIRTS</button><button data-filter="hoodie">HOODIES</button><button data-filter="shorts">SHORTS</button></div><select id="sort"><option value="featured">FEATURED</option><option value="low">PRICE: LOW TO HIGH</option><option value="high">PRICE: HIGH TO LOW</option></select></div>
+<div class="product-grid shop-grid" id="all-products"></div></main>
+
+<aside class="cart-drawer" data-cart-drawer><div class="drawer-head"><h3>YOUR BAG</h3><button data-cart-close>×</button></div><div class="cart-items" data-cart-items></div><div class="cart-summary"><div><span>Subtotal</span><strong data-cart-total>₹0</strong></div><small>Taxes and shipping calculated at checkout.</small><a class="btn btn-dark full" href="checkout.html">CHECKOUT</a></div></aside><div class="overlay" data-overlay></div>
+<div class="search-modal" data-search-modal><button data-search-close>×</button><form action="shop.html"><input name="q" placeholder="SEARCH BLACK JACKAL"><button>SEARCH</button></form></div>
+<script src="app.js"></script><script src="data.js"></script>
+<script>
+const params=new URLSearchParams(location.search), query=(params.get("q")||"").toLowerCase(); let active="all";
+function refreshShop(){let list=products.filter(p=>(active==="all"||p.category===active)&&(!query||p.name.toLowerCase().includes(query)));const s=document.getElementById("sort").value;if(s==="low")list.sort((a,b)=>a.price-b.price);if(s==="high")list.sort((a,b)=>b.price-a.price);document.getElementById("product-count").textContent=list.length;renderProducts("all-products",list);}
+document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");active=b.dataset.filter;refreshShop()});document.getElementById("sort").onchange=refreshShop;refreshShop();
+</script></body></html>

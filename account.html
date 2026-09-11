@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Account — Black Jackal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body><header class="simple-header"><a class="brand" href="index.html"><img src="black-jackal-logo.svg"><span>BLACK JACKAL</span></a><a href="shop.html">SHOP →</a></header>
+<main class="account-page"><div class="account-head"><p class="eyebrow">BLACK JACKAL / ACCOUNT</p><h1>YOUR<br><em>PACK.</em></h1></div>
+<div class="account-grid"><section class="account-card"><h3>PROFILE</h3><p>Save your basic details on this device for a faster checkout.</p>
+<input id="account-name" placeholder="Your name"><input id="account-email" placeholder="Email address" type="email"><button class="btn btn-dark" id="save-profile">SAVE PROFILE</button><small id="profile-msg"></small></section>
+<section class="account-card"><h3>ORDER HISTORY</h3><div id="orders"></div></section></div></main>
+<script>
+function money(n){return Number(n).toLocaleString("en-IN")}
+const orders=JSON.parse(localStorage.getItem("bj_orders")||"[]"),el=document.getElementById("orders");
+if(!orders.length){el.innerHTML='<p class="muted">No orders yet. Your first drop is waiting.</p>'}
+else el.innerHTML=orders.map(o=>`<div class="order-card"><div class="order-top"><strong>${o.orderId}</strong><em>${o.status}</em></div><small>${new Date(o.createdAt).toLocaleString("en-IN")}</small><div class="order-products">${o.items.map(i=>`<div class="ordered-item"><img src="${i.image}" alt=""><div><strong>${i.name}</strong><small>Size: ${i.size} · Qty: ${i.quantity}</small></div><b>₹${money(i.lineTotal)}</b></div>`).join("")}</div><div class="order-total">ORDER TOTAL <strong>₹${money(o.total)}</strong></div></div>`).join("");
+const profile=JSON.parse(localStorage.getItem("bj_profile")||"{}");document.getElementById("account-name").value=profile.name||"";document.getElementById("account-email").value=profile.email||"";
+document.getElementById("save-profile").onclick=()=>{localStorage.setItem("bj_profile",JSON.stringify({name:document.getElementById("account-name").value,email:document.getElementById("account-email").value}));document.getElementById("profile-msg").textContent="Profile saved on this device."};
+</script>
+<style>
+.order-card{border:1px solid #ccc;padding:18px;margin-bottom:18px}.order-top{display:flex;justify-content:space-between;align-items:center}.order-top em{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.12em;border:1px solid #111;padding:6px}.order-card>small{display:block;color:#777;margin-top:7px}.order-products{margin-top:15px}.ordered-item{display:grid;grid-template-columns:55px 1fr auto;gap:12px;align-items:center;border-top:1px solid #ddd;padding:12px 0}.ordered-item img{width:55px;height:70px;object-fit:cover}.ordered-item strong{font-size:10px}.ordered-item small{display:block;color:#777;margin-top:5px;font-size:9px}.ordered-item b{font-size:10px}.order-total{border-top:1px solid #aaa;padding-top:14px;font-size:9px;display:flex;justify-content:space-between;font-weight:800}
+</style></body></html>
