@@ -1,23 +1,11 @@
-# Use Node.js
-FROM node:20-alpine
+# Use the official PHP image
+FROM php:8.1-apache
 
-# Set working directory
-WORKDIR /app
+# Copy the current directory contents into the container at /var/www/html
+COPY . /var/www/html/
 
-# Copy package files
-COPY package*.json ./
+# Set the working directory
+WORKDIR /var/www/html
 
-# Install dependencies
-RUN npm ci
-
-# Copy project files
-COPY . .
-
-# Build Next.js application
-RUN npm run build
-
-# Expose Next.js port
-EXPOSE 3000
-
-# Start application
-CMD ["npm", "start"]
+# Expose the port the app runs on
+EXPOSE 80
